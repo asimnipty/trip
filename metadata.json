@@ -1,0 +1,6 @@
+{
+  "name": "Welcare Trip",
+  "description": "A comprehensive Travel Agency ERP system to manage invoices, ticket ledger accounts, payments, and agent performance reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
