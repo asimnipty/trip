@@ -37,10 +37,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`🚀 Travel ERP Server running at http://localhost:${PORT}`);
-    console.log(`📡 Ingress routing is online. Ready for connections.`);
-  });
-}
+  app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
 
 startServer();
