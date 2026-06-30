@@ -36,6 +36,7 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
+      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
       const dataRes = await fetch(`${API_BASE}/api/data`);
       if (!dataRes.ok) throw new Error("Could not download ledger data");
       const data = await dataRes.json();
@@ -43,7 +44,9 @@ export default function App() {
       setAgents(data.agents || []);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to establish synchronization with Server");
+      setError(
+        err.message || "Failed to establish synchronization with Server",
+      );
     } finally {
       setLoading(false);
     }
@@ -121,10 +124,16 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50/70 font-sans text-slate-800 flex flex-col">
       {config && (
-        <div className={`px-4 py-2 border-b text-xs flex items-center justify-between gap-2 ${config.status === "fallback" ? "bg-amber-50 text-amber-800" : "bg-emerald-50 text-emerald-800"}`}>
+        <div
+          className={`px-4 py-2 border-b text-xs flex items-center justify-between gap-2 ${config.status === "fallback" ? "bg-amber-50 text-amber-800" : "bg-emerald-50 text-emerald-800"}`}
+        >
           <div className="flex items-center gap-2">
             <Database className="h-3.5 w-3.5" />
-            <span>{config.status === "connected" ? "Atlas Online" : "Local Cache Active"}</span>
+            <span>
+              {config.status === "connected"
+                ? "Atlas Online"
+                : "Local Cache Active"}
+            </span>
           </div>
         </div>
       )}
@@ -132,8 +141,18 @@ export default function App() {
       <header className="bg-white border-b border-slate-100 h-16 flex items-center px-8 justify-between">
         <h1 className="font-bold text-lg">Welcare Trip ERP</h1>
         <div className="flex gap-2">
-          <button onClick={() => setIsAgentOpen(true)} className="px-3 py-1.5 border rounded-lg text-xs">Add Agent</button>
-          <button onClick={startNewInvoice} className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs">Create Invoice</button>
+          <button
+            onClick={() => setIsAgentOpen(true)}
+            className="px-3 py-1.5 border rounded-lg text-xs"
+          >
+            Add Agent
+          </button>
+          <button
+            onClick={startNewInvoice}
+            className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs"
+          >
+            Create Invoice
+          </button>
         </div>
       </header>
 
@@ -143,24 +162,51 @@ export default function App() {
             <ServerCrash />
             <div>
               <p className="font-bold">Backend Communication Disrupted</p>
-              <button onClick={loadERPData} className="text-xs underline">Retry</button>
+              <button onClick={loadERPData} className="text-xs underline">
+                Retry
+              </button>
             </div>
           </div>
         )}
 
         {loading ? (
-          <div className="flex justify-center py-20"><Loader2 className="animate-spin h-8 w-8 text-indigo-600" /></div>
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin h-8 w-8 text-indigo-600" />
+          </div>
         ) : (
           <div className="space-y-6">
-            {activeTab === "dashboard" && <Dashboard invoices={invoices} agents={agents} />}
-            {activeTab === "invoices" && <InvoiceList invoices={invoices} agents={agents} onEdit={startEditInvoice} onDelete={handleDeleteInvoice} onRefresh={loadERPData} loading={loading} />}
-            {activeTab === "analytics" && <Analytics invoices={invoices} agents={agents} />}
+            {activeTab === "dashboard" && (
+              <Dashboard invoices={invoices} agents={agents} />
+            )}
+            {activeTab === "invoices" && (
+              <InvoiceList
+                invoices={invoices}
+                agents={agents}
+                onEdit={startEditInvoice}
+                onDelete={handleDeleteInvoice}
+                onRefresh={loadERPData}
+                loading={loading}
+              />
+            )}
+            {activeTab === "analytics" && (
+              <Analytics invoices={invoices} agents={agents} />
+            )}
           </div>
         )}
       </main>
 
-      <InvoiceModal isOpen={isInvoiceOpen} onClose={() => setIsInvoiceOpen(false)} onSave={handleSaveInvoice} agents={agents} editingInvoice={editingInvoice} />
-      <AgentModal isOpen={isAgentOpen} onClose={() => setIsAgentOpen(false)} onSave={handleAddAgent} />
+      <InvoiceModal
+        isOpen={isInvoiceOpen}
+        onClose={() => setIsInvoiceOpen(false)}
+        onSave={handleSaveInvoice}
+        agents={agents}
+        editingInvoice={editingInvoice}
+      />
+      <AgentModal
+        isOpen={isAgentOpen}
+        onClose={() => setIsAgentOpen(false)}
+        onSave={handleAddAgent}
+      />
     </div>
   );
 }
