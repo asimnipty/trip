@@ -1,48 +1,36 @@
 import express from "express";
-import path from "path";
 import dotenv from "dotenv";
-import { createServer as createViteServer } from "vite";
-import apiRouter from "./routes/api";
 import cors from "cors";
+import apiRouter from "./routes/api";
+
 // Load environment variables
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Configure CORS to strictly allow your GitHub Pages domain
 app.use(cors({
-  origin: "https://asimnipty.github.io", // Allow your GitHub Pages domain
+  origin: "https://asimnipty.github.io", 
   methods: ["GET", "POST", "DELETE", "PUT"],
+  credentials: true
 }));
 
 app.use(express.json());
 
 // ─────────────────────────────────────────────────────────────────
-// REGISTER MODULAR BACKEND ROUTERS
+// API ROUTES
 // ─────────────────────────────────────────────────────────────────
 app.use("/api", apiRouter);
 
-// ─────────────────────────────────────────────────────────────────
-// VITE DEV SERVER / PRODUCTION BUNDLER INTEGRATION
-// ─────────────────────────────────────────────────────────────────
-async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    // Mount Vite dev server in middleware mode
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-  } else {
-    // Production serving of static compiled site
-    const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
-    });
-  }
-
-  app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+// Health check endpoint so you can verify the server is live
+app.get("/", (req, res) => {
+  res.send("Backend API is online.");
 });
 
-startServer();
+// ─────────────────────────────────────────────────────────────────
+// SERVER STARTUP
+// ─────────────────────────────────────────────────────────────────
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
