@@ -23,9 +23,8 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 
 // backend/server.ts
 var import_express2 = __toESM(require("express"), 1);
-var import_path = __toESM(require("path"), 1);
 var import_dotenv2 = __toESM(require("dotenv"), 1);
-var import_vite = require("vite");
+var import_cors = __toESM(require("cors"), 1);
 
 // backend/routes/api.ts
 var import_express = require("express");
@@ -227,27 +226,18 @@ var api_default = router;
 // backend/server.ts
 import_dotenv2.default.config();
 var app = (0, import_express2.default)();
-var PORT = 3e3;
+var PORT = process.env.PORT || 3e3;
+app.use((0, import_cors.default)({
+  origin: "https://asimnipty.github.io",
+  methods: ["GET", "POST", "DELETE", "PUT"],
+  credentials: true
+}));
 app.use(import_express2.default.json());
 app.use("/api", api_default);
-async function startServer() {
-  if (process.env.NODE_ENV !== "production") {
-    const vite = await (0, import_vite.createServer)({
-      server: { middlewareMode: true },
-      appType: "spa"
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = import_path.default.join(process.cwd(), "dist");
-    app.use(import_express2.default.static(distPath));
-    app.get("*", (req, res) => {
-      res.sendFile(import_path.default.join(distPath, "index.html"));
-    });
-  }
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`\u{1F680} Travel ERP Server running at http://localhost:${PORT}`);
-    console.log(`\u{1F4E1} Ingress routing is online. Ready for connections.`);
-  });
-}
-startServer();
+app.get("/", (req, res) => {
+  res.send("Backend API is online.");
+});
+app.listen(PORT, () => {
+  console.log(`\u{1F680} Server running on port ${PORT}`);
+});
 //# sourceMappingURL=server.cjs.map
