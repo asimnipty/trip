@@ -3,12 +3,16 @@ import path from "path";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
 import apiRouter from "./routes/api";
-
+import cors from "cors";
 // Load environment variables
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.use(cors({
+  origin: "https://asimnipty.github.io", // Allow your GitHub Pages domain
+  methods: ["GET", "POST", "DELETE", "PUT"],
+}));
 
 app.use(express.json());
 
