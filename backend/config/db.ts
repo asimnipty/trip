@@ -1,7 +1,7 @@
 import { MongoClient, Db } from "mongodb";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 let dbClient: MongoClient | null = null;
 let db: Db | null = null;
