@@ -5,6 +5,7 @@ import { InvoiceList } from "./components/InvoiceList";
 import { InvoiceModal } from "./components/InvoiceModal";
 import { AgentModal } from "./components/AgentModal";
 import { Analytics } from "./components/Analytics";
+
 import {
   Globe,
   PlusCircle,
@@ -18,7 +19,15 @@ import {
 } from "lucide-react";
 
 // Use the environment variable, fallback to localhost for development
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
+// Use the environment variable if set. If not, fall back to the production
+// Render backend when running on GitHub Pages, or localhost during local dev.
+const PROD_API_URL = "https://trip-4a60.onrender.com";
+const isGitHubPages =
+  typeof window !== "undefined" &&
+  window.location.hostname.endsWith("github.io");
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  (isGitHubPages ? PROD_API_URL : "http://localhost:3000");
 
 export default function App() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -36,7 +45,6 @@ export default function App() {
     setLoading(true);
     setError(null);
     try {
-      const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000";
       const dataRes = await fetch(`${API_BASE}/api/data`);
       if (!dataRes.ok) throw new Error("Could not download ledger data");
       const data = await dataRes.json();
