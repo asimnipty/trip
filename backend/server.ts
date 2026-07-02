@@ -14,14 +14,10 @@ const PORT = Number(process.env.PORT) || 3000;
 app.use(cors());
 app.use(express.json());
 
-// ─────────────────────────────────────────────────────────────────
 // REGISTER MODULAR BACKEND ROUTERS
-// ─────────────────────────────────────────────────────────────────
 app.use("/api", apiRouter);
 
-// ─────────────────────────────────────────────────────────────────
 // VITE DEV SERVER / PRODUCTION BUNDLER INTEGRATION
-// ─────────────────────────────────────────────────────────────────
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     // Mount Vite dev server in middleware mode

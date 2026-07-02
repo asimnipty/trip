@@ -248,136 +248,104 @@ export default function App() {
               <Globe className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="font-bold text-slate-800 text-base leading-none tracking-tight">Welcare Trip</h1>
-              <p className="text-[10px] text-slate-400 mt-1 font-medium uppercase tracking-wider">Enterprise Resource Planner</p>
+              <h1 className="text-base font-bold text-slate-900 tracking-tight leading-none">Welcare Trip ERP</h1>
+              <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-1 inline-block">Management Ledger</span>
             </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="flex items-center gap-2">
-            <div className="relative">
+          {/* Navigation links & Actions */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <nav className="hidden md:flex items-center bg-slate-100 p-1 rounded-xl">
               <button
-                id="download-report-dropdown-btn"
-                onClick={() => setIsDownloadOpen(!isDownloadOpen)}
-                className="px-3 py-1.5 border border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition cursor-pointer"
+                id="tab-dashboard-btn"
+                onClick={() => setActiveTab("dashboard")}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === "dashboard" ? "bg-white text-indigo-600 shadow-xs" : "text-slate-600 hover:text-slate-900"}`}
               >
-                <Download className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Download Report</span>
-                <ChevronDown className="h-3 w-3" />
+                <div className="flex items-center gap-1.5">
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  Dashboard
+                </div>
+              </button>
+              <button
+                id="tab-invoices-btn"
+                onClick={() => setActiveTab("invoices")}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === "invoices" ? "bg-white text-indigo-600 shadow-xs" : "text-slate-600 hover:text-slate-900"}`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <FileSpreadsheet className="h-3.5 w-3.5" />
+                  Invoices Ledger
+                </div>
+              </button>
+              <button
+                id="tab-analytics-btn"
+                onClick={() => setActiveTab("analytics")}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${activeTab === "analytics" ? "bg-white text-indigo-600 shadow-xs" : "text-slate-600 hover:text-slate-900"}`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <BarChart3 className="h-3.5 w-3.5" />
+                  Analytics
+                </div>
+              </button>
+            </nav>
+
+            <div className="flex items-center gap-2">
+              <button
+                id="add-agent-btn"
+                onClick={() => setIsAgentOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition cursor-pointer"
+              >
+                <UserPlus className="h-4 w-4" />
+                <span className="hidden sm:inline">Add Agent</span>
               </button>
               
-              {isDownloadOpen && (
-                <>
-                  <div 
-                    className="fixed inset-0 z-40" 
-                    onClick={() => setIsDownloadOpen(false)} 
-                  />
-                  <div className="absolute right-0 mt-1.5 w-56 rounded-lg bg-white shadow-lg border border-slate-100 py-1 z-50 text-slate-700 font-medium">
-                    <button
-                      onClick={() => {
-                        downloadInvoicesCSV(invoices);
-                        setIsDownloadOpen(false);
-                      }}
-                      className="w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center gap-2 text-xs transition cursor-pointer"
-                    >
-                      <FileSpreadsheet className="h-4 w-4 text-emerald-600" />
-                      <span>Download Invoice Ledger (CSV)</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        downloadAgentsCSV(invoices, agents);
-                        setIsDownloadOpen(false);
-                      }}
-                      className="w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center gap-2 text-xs transition cursor-pointer"
-                    >
-                      <FileText className="h-4 w-4 text-blue-600" />
-                      <span>Download Agent Summary (CSV)</span>
-                    </button>
-                    <div className="border-t border-slate-100 my-1" />
-                    <button
-                      onClick={() => {
-                        window.print();
-                        setIsDownloadOpen(false);
-                      }}
-                      className="w-full text-left px-3.5 py-2 hover:bg-slate-50 flex items-center gap-2 text-xs transition cursor-pointer"
-                    >
-                      <Printer className="h-4 w-4 text-slate-500" />
-                      <span>Print / Save PDF Report</span>
-                    </button>
-                  </div>
-                </>
-              )}
+              <button
+                id="create-invoice-btn"
+                onClick={startNewInvoice}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl shadow-sm transition cursor-pointer"
+              >
+                <PlusCircle className="h-4 w-4" />
+                <span>Create Invoice</span>
+              </button>
             </div>
-
-            <button
-              id="add-agent-btn"
-              onClick={() => setIsAgentOpen(true)}
-              className="px-3 py-1.5 border border-slate-200 text-slate-600 hover:text-indigo-600 hover:bg-slate-50 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition"
-            >
-              <UserPlus className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Add Agent</span>
-            </button>
-            <button
-              id="create-invoice-btn"
-              onClick={startNewInvoice}
-              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-xs transition"
-            >
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span>Create Invoice</span>
-            </button>
           </div>
 
         </div>
       </header>
 
-      {/* 3. Sub-navigation menu layout */}
-      <nav className="bg-white border-b border-slate-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-1 py-1">
-            <button
-              id="tab-dashboard-btn"
-              onClick={() => setActiveTab("dashboard")}
-              className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5 transition cursor-pointer ${activeTab === "dashboard" ? "bg-indigo-50/50 text-indigo-700 font-semibold" : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"}`}
-            >
-              <LayoutDashboard className="h-3.5 w-3.5" />
-              <span>Executive Dashboard</span>
-            </button>
-            <button
-              id="tab-invoices-btn"
-              onClick={() => setActiveTab("invoices")}
-              className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5 transition cursor-pointer ${activeTab === "invoices" ? "bg-indigo-50/50 text-indigo-700 font-semibold" : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"}`}
-            >
-              <FileSpreadsheet className="h-3.5 w-3.5" />
-              <span>Invoices & Ledgers</span>
-            </button>
-            <button
-              id="tab-analytics-btn"
-              onClick={() => setActiveTab("analytics")}
-              className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-1.5 transition cursor-pointer ${activeTab === "analytics" ? "bg-indigo-50/50 text-indigo-700 font-semibold" : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"}`}
-            >
-              <BarChart3 className="h-3.5 w-3.5" />
-              <span>Analytical Charts</span>
-            </button>
-          </div>
-        </div>
-      </nav>
+      {/* Mobile Sticky Tab bar helper */}
+      <div id="mobile-tabs-rail" className="md:hidden bg-white border-b border-slate-100 px-4 py-2 flex gap-1 sticky top-16 z-30">
+        <button
+          onClick={() => setActiveTab("dashboard")}
+          className={`flex-1 py-2 text-center text-xs font-semibold rounded-lg transition-all ${activeTab === "dashboard" ? "bg-indigo-50 text-indigo-600" : "text-slate-500"}`}
+        >
+          Dashboard
+        </button>
+        <button
+          onClick={() => setActiveTab("invoices")}
+          className={`flex-1 py-2 text-center text-xs font-semibold rounded-lg transition-all ${activeTab === "invoices" ? "bg-indigo-50 text-indigo-600" : "text-slate-500"}`}
+        >
+          Ledger
+        </button>
+        <button
+          onClick={() => setActiveTab("analytics")}
+          className={`flex-1 py-2 text-center text-xs font-semibold rounded-lg transition-all ${activeTab === "analytics" ? "bg-indigo-50 text-indigo-600" : "text-slate-500"}`}
+        >
+          Analytics
+        </button>
+      </div>
 
-      {/* 4. Core Workspace Frame */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* 3. Main content canvas area */}
+      <main id="erp-canvas" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Connection Failure Error alert panel */}
-        {error && (
-          <div className="bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-xl shadow-xs text-rose-700 text-sm flex gap-3 mb-6">
-            <ServerCrash className="h-5 w-5 shrink-0" />
+        {/* Connection health warning panel */}
+        {!loading && config && config.status === "fallback" && (
+          <div id="fallback-warning-panel" className="mb-6 p-4 bg-amber-50 border border-amber-200/60 rounded-2xl flex items-start gap-3 text-amber-800">
+            <AlertTriangle className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" />
             <div className="space-y-1">
-              <h5 className="font-bold">Backend Communication Disrupted</h5>
-              <p>{error}</p>
-              <button
-                onClick={loadERPData}
-                className="mt-2 text-xs font-bold bg-white text-rose-700 border border-rose-200 px-2.5 py-1 rounded hover:bg-rose-100 transition"
-              >
-                Retry Synchronizing
-              </button>
+              <h4 className="text-xs font-bold">Local Storage Failover Enabled</h4>
+              <p className="text-[11px] font-medium opacity-90 leading-relaxed">
+                The application could not reach the database. Your ledger is safely working on offline mode (LocalStorage). Your changes are saved locally!
+              </p>
             </div>
           </div>
         )}

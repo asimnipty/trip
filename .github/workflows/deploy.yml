@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-size: 20
+          node-version: 20
           cache: 'npm'
 
       - name: Install Dependencies
@@ -52,4 +52,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-Full-stack server configuration instructions can be skipped since GitHub Pages only hosts static files (all database states will seamlessly transition to LocalStorage offline mode on GitHub Pages).
