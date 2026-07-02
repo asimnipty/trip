@@ -32,7 +32,7 @@ var import_express = require("express");
 // backend/config/db.ts
 var import_mongodb = require("mongodb");
 var import_dotenv = __toESM(require("dotenv"), 1);
-import_dotenv.default.config();
+import_dotenv.default.config({ quiet: true });
 var dbClient = null;
 var db = null;
 var useFallback = false;
@@ -206,9 +206,10 @@ var addAgent = async (req, res) => {
 
 // backend/routes/api.ts
 var router = (0, import_express.Router)();
-router.get("/config", (req, res) => {
+router.get("/config", async (req, res) => {
   const uri = process.env.MONGODB_URI;
   const configured = !!(uri && !uri.includes("USER:PASSWORD") && !uri.includes("YOUR_"));
+  await getDatabase();
   const fallback = isUsingFallback();
   res.json({
     status: fallback ? "fallback" : "connected",
@@ -224,7 +225,7 @@ router.post("/agents", addAgent);
 var api_default = router;
 
 // backend/server.ts
-import_dotenv2.default.config();
+import_dotenv2.default.config({ quiet: true });
 var app = (0, import_express2.default)();
 var PORT = process.env.PORT || 3e3;
 app.use((0, import_cors.default)({
