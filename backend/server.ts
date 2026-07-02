@@ -1,36 +1,48 @@
 import express from "express";
+import path from "path";
 import dotenv from "dotenv";
 import cors from "cors";
+import { createServer as createViteServer } from "vite";
 import apiRouter from "./routes/api";
 
 // Load environment variables
-dotenv.config({ quiet: true });
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
-// Configure CORS to strictly allow your GitHub Pages domain
-app.use(cors({
-  origin: "https://asimnipty.github.io", 
-  methods: ["GET", "POST", "DELETE", "PUT"],
-  credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
 
 // ─────────────────────────────────────────────────────────────────
-// API ROUTES
+// REGISTER MODULAR BACKEND ROUTERS
 // ─────────────────────────────────────────────────────────────────
 app.use("/api", apiRouter);
 
-// Health check endpoint so you can verify the server is live
-app.get("/", (req, res) => {
-  res.send("Backend API is online.");
-});
+// ─────────────────────────────────────────────────────────────────
+// VITE DEV SERVER / PRODUCTION BUNDLER INTEGRATION
+// ─────────────────────────────────────────────────────────────────
+async function startServer() {
+  if (process.env.NODE_ENV !== "production") {
+    // Mount Vite dev server in middleware mode
+    const vite = await createViteServer({
+      server: { middlewareMode: true },
+      appType: "spa",
+    });
+    app.use(vite.middlewares);
+  } else {
+    // Production serving of static compiled site
+    const distPath = path.join(process.cwd(), "dist");
+    app.use(express.static(distPath));
+    app.get("*", (req, res) => {
+      res.sendFile(path.join(distPath, "index.html"));
+    });
+  }
 
-// ─────────────────────────────────────────────────────────────────
-// SERVER STARTUP
-// ─────────────────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Travel ERP Server running at http://localhost:${PORT}`);
+    console.log(`📡 Ingress routing is online. Ready for connections.`);
+  });
+}
+
+startServer();
